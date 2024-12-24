@@ -1,4 +1,27 @@
-<script setup></script>
+<script setup>
+import { computed } from 'vue';
+import {getPressureMm, getTime} from '../utils/index'
+
+const props = defineProps({
+  weatherInfo: {
+    type: [Object, null],
+    required: true
+  }
+})
+
+const sunriseTime = computed(()=>{
+  return getTime(props.weatherInfo?.sys?.sunrise + timezone.value)
+})
+
+const sunsetTime = computed(()=>{
+  return getTime(props.weatherInfo?.sys?.sunset + timezone.value)
+})
+
+const timezone = computed(()=>{
+  return props.weatherInfo?.timezone
+})
+
+</script>
 
 <template>
 	<div v-if="weatherInfo?.weather" class="section highlights">
