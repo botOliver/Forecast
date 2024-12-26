@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed} from 'vue';
+import { ref, onMounted } from 'vue';
 import {API_KEY, BASE_URL} from './constants/index'
 import WeatherSummary from './components/WeatherSummary.vue'
 import Highlights from './components/Highlights.vue'
@@ -8,15 +8,12 @@ import Humidity from './components/Humidity.vue';
 
 const city = ref('Paris')
 const weatherInfo = ref(null)
-const isError = computed(()=>{weatherInfo.value?.cod !== 200})
 
 function getWeather (){
   fetch(`${BASE_URL}?q=${city.value}&units=metric&appid=${API_KEY}`)
     .then((resnponse)=> resnponse.json())
     .then((data)=> weatherInfo.value = data)
 }
-
-///ssds
 
 onMounted(getWeather)
 </script>
@@ -27,8 +24,7 @@ onMounted(getWeather)
         <div class="container">
           <div class="laptop">
             <div class="sections">
-              <section 
-              :class="['section', 'section-left', {'section-error': isError}]">
+              <section class="section section-left">
                 <div class="info">
                   <div class="city-inner">
                     <input 
@@ -38,14 +34,14 @@ onMounted(getWeather)
                     @keyup.enter="getWeather"  
                     >
                   </div>
-                  <WeatherSummary v-if="!isError" :weatherInfo="weatherInfo"/>
+                  <WeatherSummary :weatherInfo="weatherInfo"/>
                 </div>
               </section>
-              <section v-if="!isError" class="section section-right">
+              <section class="section section-right">
                 <Highlights :weatherInfo="weatherInfo"/>
               </section> 
             </div>
-            <div v-if="!isError" class="sections">
+            <div v-if="weatherInfo?.weather" class="sections">
               <Coords :coord="weatherInfo.coord"/>
               <Humidity :humidity="weatherInfo.main.humidity"/>
             </div>
@@ -86,11 +82,6 @@ onMounted(getWeather)
 
   @media (max-width: 767px)
     width: 100%
-    padding-right: 0
-
-  &.section-error
-    min-width: 235px
-    width: auto
     padding-right: 0
 
 .section-right
@@ -143,4 +134,6 @@ onMounted(getWeather)
 
   @media (max-width: 767px)
     width: 100%
+
+
 </style>
